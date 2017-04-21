@@ -5,24 +5,7 @@ import nltk
 
 expected_questions = {'what is your name':'Auro', 'who developed you':'Soolu and Team','when were you developed':'I am still under delopment', 'what is auro': 'I am a personal Digital Assistant developed by Soolu and Team', 'who are you':'I am Auro, the personal Assistant'}
 
-def newFn():
-	while True:
-		try:
-			input = raw_input("Question: ")
-			app_id = "587E79-677J3JTXE3"
-			client = wolframalpha.Client(app_id)
-			res_exp = expected_questions[input]
-			if res_exp is None :
-				res = client.query(input)
-				answer = next(res.results).text
-			else:
-				answer = res_exp
-			print answer
-		except:
-			wikipedia.set_lang("en")
-			print wikipedia.summary(input, sentences=2)
-
-def oldFn():
+def tokenStr():
 	filename = "./Files/userinput.txt"
 	filename1 = "./Files/dictionary.txt"
 	user = input("Enter Data: ")
@@ -75,4 +58,32 @@ def oldFn():
 	fd1.close()
 	fd.close()
 
-newFn();
+def wikiCall():
+	while True:
+  		try:
+   			input = raw_input("Question: ")
+   			app_id = "587E79-677J3JTXE3"
+   			client = wolframalpha.Client(app_id)
+   			try:
+   				res_exp = expected_questions[input]
+   				if res_exp is None :
+   					res = client.query(input)
+   					answer = next(res.results).text
+   				else:
+   					answer = res_exp
+   					print answer
+   			except:
+   				res = client.query(input)
+   				answer = next(res.results).text
+   				print answer
+   		except:
+   			wikipedia.set_lang("en")
+   			try:
+				print ("Wikipedia says: " + wikipedia.summary(input, sentences=2))
+			except wikipedia.exceptions.DisambiguationError as e:
+				print ("Ambiguos question! Be more specific")
+			except wikipedia.exceptions.PageError as pe:
+				print ("I am sorry. I didn't get your question")
+
+
+wikiCall();
