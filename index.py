@@ -3,7 +3,18 @@ import wolframalpha
 from nltk.tokenize import PunktSentenceTokenizer
 import nltk
 
-expected_questions = {'what is your name':'Auro', 'who developed you':'Soolu and Team','when were you developed':'I am still under delopment', 'what is auro': 'I am a personal Digital Assistant developed by Soolu and Team', 'who are you':'I am Auro, the personal Assistant'}
+expected_questions = {'what is your name':'Auro', 
+'who developed you':'Ginu, Greeshma and Soolu',
+'when were you developed':'I am still under delopment', 
+'what is auro': 'I am a personal Digital Assistant developed by Ginu, Greeshma and Soolu', 
+'who are you':'I am Auro, the Personal Assistant',
+'do you know me': 'Very well..!! I am afraid to reply to that. I am Auro, the Personal Assistant',
+'when was i born': '21st April 2017. My Project Review is still going on...',
+'me': 'Auro',
+'you': 'Auro',
+'What programing language was used to develop you?': 'Python',
+'Development': 'Python',
+'what are you': 'A Personal Digital Assistant',}
 
 def tokenStr():
 	filename = "./Files/userinput.txt"
@@ -62,6 +73,7 @@ def wikiCall():
 	while True:
   		try:
    			input = raw_input("Question: ")
+   			input = input.strip('').lower() 
    			app_id = "587E79-677J3JTXE3"
    			client = wolframalpha.Client(app_id)
    			try:
