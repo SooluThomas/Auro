@@ -1,20 +1,40 @@
 import wikipedia
 import wolframalpha
+
 from nltk.tokenize import PunktSentenceTokenizer
 import nltk
 
-expected_questions = {'what is your name':'Auro', 
-'who developed you':'Ginu, Greeshma and Soolu',
-'when were you developed':'I am still under delopment', 
-'what is auro': 'I am a personal Digital Assistant developed by Ginu, Greeshma and Soolu', 
-'who are you':'I am Auro, the Personal Assistant',
-'do you know me': 'Very well..!! I am afraid to reply to that. I am Auro, the Personal Assistant',
-'when was i born': '21st April 2017. My Project Review is still going on...',
-'me': 'Auro',
-'you': 'Auro',
-'What programing language was used to develop you?': 'Python',
-'Development': 'Python',
-'what are you': 'A Personal Digital Assistant',}
+from tensorflow.examples.tutorials.mnist import input_data
+mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
+import tensorflow as tf
+
+import expect
+
+# expected_questions = {'what is your name':'Auro', 
+# 'who developed you':'Ginu, Greeshma and Soolu',
+# 'who developed you?':'Ginu, Greeshma and Soolu',
+# 'who created you':'Ginu, Greeshma and Soolu',
+# 'who created you?':'Ginu, Greeshma and Soolu',
+# 'when were you developed':'I am still under delopment', 
+# 'what is auro': 'I am a personal Digital Assistant developed by Ginu, Greeshma and Soolu', 
+# 'who are you':'I am Auro, the Personal Assistant',
+# 'do you know me': 'Very well..!! I am afraid to reply to that. I am Auro, the Personal Assistant',
+# 'do you know me?': 'No, I\'m afraid you have me at a disadvantage there. I am Auro, the Personal Assistant',
+# 'how old are you?': 'A few days ago',
+# 'how old are you': 'A few days ago',
+# 'what is your age?': 'A few days',
+# 'what is your age': 'A few days',
+# 'when was i born': '21st April 2017. My Project Review is still going on...',
+# 'me': 'Auro',
+# 'you': 'Auro',
+# 'who is Soolu Thomas': 'Soolu, Ginu and Greeshma Developed me!',
+# 'who is Greeshma': 'Soolu, Ginu and Greeshma Developed me!',
+# 'who is Ginu': 'Soolu, Ginu and Greeshma Developed me!'
+# 'What programing language was used to develop you?': 'Python',
+# 'Development': 'Python',
+# 'what are you': 'A Personal Digital Assistant',}
+
+expected_questions{} = expect.requiredQ()
 
 def tokenStr():
 	filename = "./Files/userinput.txt"
@@ -69,6 +89,44 @@ def tokenStr():
 	fd1.close()
 	fd.close()
 
+def index(request):
+	answer = newFn(request.GET.get('q', ''))
+	return HttpResponse(answer)
+
+def training():
+	#Initializing
+
+	x = tf.placeholder(tf.float32, [None, 784])
+	W = tf.Variable(tf.zeros([784, 10]))
+	b = tf.Variable(tf.zeros([10]))
+	y = tf.nn.softmax(tf.matmul(x, W) + b)
+
+	#Training
+
+	cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), reduction_indices=[1]))
+	train_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
+	sess = tf.InteractiveSession()
+	tf.global_variables_initializer().run()
+
+	for _ in range(1000):
+		batch_xs, batch_ys = mnist.train.next_batch(100)
+		sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys})
+
+	#Evaluating Model
+
+	correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1))
+	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+	print(sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels}))
+
+	if __name__ == '__training__':
+		parser = argparse.ArgumentParser()
+		parser.add_argument('--data_dir', type=str, default='/tmp/tensorflow/mnist/input_data',
+		                    help='Directory for storing input data')
+		FLAGS, unparsed = parser.parse_known_args()
+		tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
+
+
+
 def wikiCall():
 	while True:
   		try:
@@ -78,7 +136,7 @@ def wikiCall():
    			client = wolframalpha.Client(app_id)
    			try:
    				res_exp = expected_questions[input]
-   				if res_exp is None :
+   				if input not in res_exp :
    					res = client.query(input)
    					answer = next(res.results).text
    				else:
